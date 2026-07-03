@@ -1,6 +1,44 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
+const STATUS_PHRASES = [
+  "Building the site",
+  "Searching for barrels",
+  "Waxing the boards",
+  "Checking the swell",
+  "Scouting the point",
+  "Tuning the fins",
+  "Reading the forecast",
+];
+
+const VISIBLE_MS = 1800;
+const FADE_MS = 600;
+
 export default function Page() {
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    const fadeOutTimer = setTimeout(() => setVisible(false), VISIBLE_MS);
+    return () => clearTimeout(fadeOutTimer);
+  }, [phraseIndex]);
+
+  useEffect(() => {
+    if (visible) return;
+
+    const swapTimer = setTimeout(() => {
+      setPhraseIndex((i) => (i + 1) % STATUS_PHRASES.length);
+      setVisible(true);
+    }, FADE_MS);
+    return () => clearTimeout(swapTimer);
+  }, [visible]);
+
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-black font-body text-white">
       <div
@@ -48,10 +86,6 @@ export default function Page() {
           className="mb-9 h-[clamp(96px,14vw,160px)] w-[clamp(96px,14vw,160px)]"
         />
 
-        <div className="mb-[18px] border-l-[3px] border-white pl-3 text-xs uppercase tracking-[0.4em] opacity-75">
-          Seal Point Boardriders Club
-        </div>
-
         <h1 className="m-0 font-display text-[clamp(56px,12vw,168px)] font-bold uppercase leading-[0.84] tracking-[-0.01em]">
           Coming
           <br />
@@ -65,21 +99,14 @@ export default function Page() {
         </p>
 
         <div
-          className="animate-pulse-dim text-[11px] uppercase tracking-[0.3em] opacity-60"
-          style={{ animation: "pulse-dim 2.4s ease-in-out infinite" }}
+          className="text-[11px] uppercase tracking-[0.3em] opacity-60 transition-opacity ease-in-out"
+          style={{
+            transitionDuration: `${FADE_MS}ms`,
+            opacity: visible ? 1 : 0,
+          }}
         >
-          ● Building the site
+          ● {STATUS_PHRASES[phraseIndex]}
         </div>
-      </div>
-
-      <div className="relative z-[2] flex flex-wrap items-center justify-between gap-3 border-t-2 border-white px-8 py-[26px] text-[11px] uppercase tracking-[0.2em] opacity-[0.55]">
-        <span>Affiliated — Surfing South Africa</span>
-        <a
-          href="mailto:sealsboardriders@gmail.com"
-          className="text-white no-underline opacity-[0.85] transition-opacity hover:opacity-100"
-        >
-          sealsboardriders@gmail.com
-        </a>
       </div>
     </div>
   );
