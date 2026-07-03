@@ -86,10 +86,6 @@ export default function Page() {
           className="mb-9 h-[clamp(96px,14vw,160px)] w-[clamp(96px,14vw,160px)]"
         />
 
-        <div className="mb-[18px] border-l-[3px] border-white pl-3 text-xs uppercase tracking-[0.4em] opacity-75">
-          Seal Point Boardriders Club
-        </div>
-
         <h1 className="m-0 font-display text-[clamp(56px,12vw,168px)] font-bold uppercase leading-[0.84] tracking-[-0.01em]">
           Coming
           <br />
